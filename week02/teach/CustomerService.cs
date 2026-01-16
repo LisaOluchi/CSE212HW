@@ -14,21 +14,44 @@ public class CustomerService {
         // Scenario: 
         // Expected Result: 
         Console.WriteLine("Test 1");
+        var cs1 = new CustomerService(-5);
 
         // Defect(s) Found: 
 
-        Console.WriteLine("=================");
+        Console.WriteLine("cs1");
 
         // Test 2
         // Scenario: 
         // Expected Result: 
         Console.WriteLine("Test 2");
+        var cs2 = new CustomerService(2);
+
+        //adding customers
+        cs2.AddNewCustomer();
+        cs2.AddNewCustomer();
+        cs2.AddNewCustomer();
+
+
+
+
 
         // Defect(s) Found: 
 
-        Console.WriteLine("=================");
+        Console.WriteLine("cs2");
+
 
         // Add more Test Cases As Needed Below
+        Console.WriteLine("Test 3");
+        cs2.ServeCustomer();
+        cs2.ServeCustomer();
+
+        Console.WriteLine("Test 4");
+        cs2.ServeCustomer();
+       
+
+
+    
+
     }
 
     private readonly List<Customer> _queue = new();
@@ -88,9 +111,14 @@ public class CustomerService {
     /// Dequeue the next customer and display the information.
     /// </summary>
     private void ServeCustomer() {
-        _queue.RemoveAt(0);
+        if (_queue.Count == 0)
+        {
+          Console.WriteLine("No customers to serve.");
+          return;
+        }
         var customer = _queue[0];
         Console.WriteLine(customer);
+        _queue.RemoveAt(0);
     }
 
     /// <summary>
