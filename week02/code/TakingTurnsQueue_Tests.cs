@@ -7,6 +7,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class TakingTurnsQueueTests
 {
+    //TestTakingTurnsQueue_FiniteRepetition
+    //Problem found: Queue order was wrong which therefore led to returning first person incorrectly.
+    // How I fixed?: Riveted the inner queue to gurantee FIFO action. The GetNectPerson funtion now has the ability to cutback and re-enqueue.
+
     [TestMethod]
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
@@ -38,7 +42,9 @@ public class TakingTurnsQueueTests
             i++;
         }
     }
-
+//TestTakingTurnsQueue_AddPlayerMidway
+//Problem found: When adding a new person halfway within the queue caused disrubtion leading to it not correctly working.
+//How I fixed?: Made sure the AddPerson funtion constantly adds to the back (FIFO) so GetNextPerson can cycle accordingly to people's turns.
     [TestMethod]
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3)
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
@@ -80,7 +86,9 @@ public class TakingTurnsQueueTests
             i++;
         }
     }
-
+//TestTakingTurnsQueue_ForeverZero
+//Problem found: The people with zero turns got removed the queue instead of stay as required
+//How I fixed?: I reformed the GetNextPerson funtion to re-enqueue whoever person's turns come to zero
     [TestMethod]
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (Forever), Sue (3)
     // Run 10 times.
@@ -111,7 +119,9 @@ public class TakingTurnsQueueTests
         var infinitePerson = players.GetNextPerson();
         Assert.AreEqual(timTurns, infinitePerson.Turns, "People with infinite turns should not have their turns parameter modified to a very big number. A very big number is not infinite.");
     }
-
+//TestTakingTurnsQueue_ForeverNegative
+//Problem Found: The people with infinte turns turned out to be getting skiped and even removed not in the right way even
+//How I fixed: I re-enqueued whichever person's turns were zero or infinite
     [TestMethod]
     // Scenario: Create a queue with the following people and turns: Tim (Forever), Sue (3)
     // Run 10 times.
@@ -139,7 +149,8 @@ public class TakingTurnsQueueTests
         var infinitePerson = players.GetNextPerson();
         Assert.AreEqual(timTurns, infinitePerson.Turns, "People with infinite turns should not have their turns parameter modified to a very big number. A very big number is not infinite.");
     }
-
+//Problem found: None, this test came out as a sucession.
+//How I fixed?: No changes Implemented.
     [TestMethod]
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
