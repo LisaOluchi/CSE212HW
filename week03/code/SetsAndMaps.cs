@@ -1,4 +1,7 @@
 using System.Text.Json;
+using System.Linq;
+using Microsoft.VisualBasic;
+
 
 public static class SetsAndMaps
 {
@@ -21,7 +24,25 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
+        var seen = new HashSet<string>();
+        var result = new List<string>();
+
+        foreach (var word in words)
+        {
+            if(word[0] == word[1])
+            continue;
+
+            var reversed = new string(new char[] { word[1], word[0] });
+
+            if (seen.Contains(reversed))
+            {
+                result.Add($"{reversed} & {word}");
+            }
+
+            seen.Add(word);
+        }
+
+
         return [];
     }
 
@@ -39,14 +60,26 @@ public static class SetsAndMaps
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
         var degrees = new Dictionary<string, int>();
-        foreach (var line in File.ReadLines(filename))
-        {
-            var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
-        }
+        
 
-        return degrees;
+        foreach (var line in File.ReadLines(filename))
+    {
+
+        var fields = line.Split(",");
+
+        var degree = fields[3].Trim();
+
+        if (degrees.ContainsKey(degree))
+            degrees[degree]++;
+        else
+            degrees[degree] = 1;
+        
+        
+            
     }
+
+    return degrees;
+}
 
     /// <summary>
     /// Determine if 'word1' and 'word2' are anagrams.  An anagram
@@ -66,8 +99,23 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
+        if (word1 == null || word2 == null)
         return false;
+
+        var w1 = word1.ToLower().Replace(" ", "");
+        var w2 = word2.ToLower().Replace(" ", "");
+
+        if(w1.Length != w2.Length)
+        return false;
+
+        var arr1 = w1.ToCharArray();
+        var arr2 = w2.ToCharArray();
+
+        Array.Sort(arr1);
+        Array.Sort(arr2);
+
+        
+        return arr1.SequenceEqual(arr2);
     }
 
     /// <summary>
@@ -96,11 +144,19 @@ public static class SetsAndMaps
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
-        // TODO Problem 5:
-        // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
-        // on those classes so that the call to Deserialize above works properly.
-        // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
-        // 3. Return an array of these string descriptions.
-        return [];
+        var results = new List<string>();
+
+        foreach (var feature in featureCollection.Features)
+        {
+            var place = feature.Properties.Place;
+            var mag = feature.Properties.Mag;
+
+            if (place != null && mag != null)
+            {
+                results.Add($"{place} - Mag {mag}");
+            }
+        }
+        
+        return results.ToArray();
     }
 }
